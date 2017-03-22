@@ -450,9 +450,13 @@ void l2r_l2_svr_fun::grad(double *w, double *g)
 // solution will be put in w
 //
 // See Appendix of LIBLINEAR paper, Fan et al. (2008)
-
+#if USE_WEIGHTS
+#define GETI(i) (i)
+#else
 #define GETI(i) ((int) prob->y[i])
 // To support weights for instances, use GETI(i) (i)
+#endif
+
 
 class Solver_MCSVM_CS
 {
@@ -776,8 +780,12 @@ void Solver_MCSVM_CS::Solve(double *w)
 // See Algorithm 3 of Hsieh et al., ICML 2008
 
 #undef GETI
+#if USE_WEIGHTS
+#define GETI(i) (i)
+#else
 #define GETI(i) (y[i]+1)
 // To support weights for instances, use GETI(i) (i)
+#endif
 
 static void solve_l2r_l1l2_svc(
 	const problem *prob, double *w, double eps,
@@ -993,9 +1001,12 @@ static void solve_l2r_l1l2_svc(
 // See Algorithm 4 of Ho and Lin, 2012   
 
 #undef GETI
+#if USE_WEIGHTS
+#define GETI(i) (i)
+#else
 #define GETI(i) (0)
 // To support weights for instances, use GETI(i) (i)
-
+#endif
 static void solve_l2r_l1l2_svr(
 	const problem *prob, double *w, const parameter *param,
 	int solver_type)
@@ -1211,8 +1222,12 @@ static void solve_l2r_l1l2_svr(
 // See Algorithm 5 of Yu et al., MLJ 2010
 
 #undef GETI
+#if USE_WEIGHTS
+#define GETI(i) (i)
+#else
 #define GETI(i) (y[i]+1)
 // To support weights for instances, use GETI(i) (i)
+#endif
 
 void solve_l2r_lr_dual(const problem *prob, double *w, double eps, double Cp, double Cn)
 {
@@ -1372,8 +1387,12 @@ void solve_l2r_lr_dual(const problem *prob, double *w, double eps, double Cp, do
 // See Yuan et al. (2010) and appendix of LIBLINEAR paper, Fan et al. (2008)
 
 #undef GETI
+#if USE_WEIGHTS
+#define GETI(i) (i)
+#else
 #define GETI(i) (y[i]+1)
 // To support weights for instances, use GETI(i) (i)
+#endif
 
 static void solve_l1r_l2_svc(
 	problem *prob_col, double *w, double eps,
@@ -1658,8 +1677,12 @@ static void solve_l1r_l2_svc(
 // See Yuan et al. (2011) and appendix of LIBLINEAR paper, Fan et al. (2008)
 
 #undef GETI
+#if USE_WEIGHTS
+#define GETI(i) (i)
+#else
 #define GETI(i) (y[i]+1)
 // To support weights for instances, use GETI(i) (i)
+#endif
 
 static void solve_l1r_lr(
 	const problem *prob_col, double *w, double eps,
