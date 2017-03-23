@@ -17,7 +17,6 @@ typedef int mwIndex;
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
 #define INF HUGE_VAL
 
-#DEFINE USE_WEIGHTS 1
 
 void print_null(const char *s) {}
 void print_string_matlab(const char *s) {mexPrintf(s);}

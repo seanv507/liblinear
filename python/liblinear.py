@@ -85,16 +85,15 @@ def gen_feature_nodearray(xi, feature_max=None, issparse=True):
 	return ret, max_idx
 
 class problem(Structure):
-	_names = ["l", "n", "y", "x", "bias"]
+	_names = ["l", "n", "y", "x", "bias"]	_
 	_types = [c_int, c_int, POINTER(c_double), POINTER(POINTER(feature_node)), c_double]
 	_fields_ = genFields(_names, _types)
-
 	def __init__(self, y, x, bias = -1):
 		if len(y) != len(x) :
 			raise ValueError("len(y) != len(x)")
 		self.l = l = len(y)
 		self.bias = -1
-
+		
 		max_idx = 0
 		x_space = self.x_space = []
 		for i, xi in enumerate(x):
@@ -124,6 +123,23 @@ class problem(Structure):
 		for xi in self.x_space:
 			xi[-2] = node
 		self.bias = bias
+
+class w_problem(problem):
+
+	names = problem._names + ["W"]
+	types = problem._types + [ POINTER(c_double)]
+
+	_fields_ = genFields(_names, _types)
+
+	def __init__(self, W, y, x, bias = -1):
+		super(w_problem, self)__init__(y, x, bias)__
+		if len(W) != 0 and len(W) != len(x):
+			raise ValueError("len(W) != len(x)")
+		if len(W) == 0:
+			W = [1] * l
+
+
+
 
 
 class parameter(Structure):
