@@ -5,3 +5,7 @@ Usage:
 Example:
 	$ ./train -W heart_scale.wgt  heart_scale
 
+.......................****.**
+optimization finished, #iter = 244
+Objective value = -131.819531
+nSV = 199

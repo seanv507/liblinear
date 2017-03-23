@@ -1,6 +1,6 @@
 CXX ?= g++
 CC ?= gcc
-CFLAGS = -Wall -Wconversion -O3 -fPIC
+CFLAGS = -Wall -Wconversion -O3 -fPIC -DUSE_WEIGHTS=${USE_WEIGHTS}
 LIBS = blas/blas.a
 SHVER = 3
 OS = $(shell uname)

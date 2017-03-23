@@ -75,7 +75,7 @@ sparse data, use `-l 0' to keep the sparsity.
 Installation
 ============
 
-On Unix systems, type `make' to build the `train' and `predict'
+On Unix systems, type `make USE_WEIGHTs=0|1' to build the `train' and `predict'
 programs. Run them without arguments to show the usages.
 
 On other systems, consult `Makefile' to build them (e.g., see
@@ -596,5 +596,10 @@ http://www.csie.ntu.edu.tw/~cjlin/liblinear
 
 For any questions and comments, please send your email to
 cjlin@csie.ntu.edu.tw
+
+......*..*
+optimization finished, #iter = 85
+Objective value = -121.123792
+nSV = 193
 
 

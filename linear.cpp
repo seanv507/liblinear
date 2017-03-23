@@ -816,7 +816,7 @@ static void solve_l2r_l1l2_svc(
 	double PGmax_new, PGmin_new;
 
 	// default solver_type: L2R_L2LOSS_SVC_DUAL
-#ifdef USE_WEIGHTS
+#if USE_WEIGHTS
 	double *diag = new double[l];
 	double *upper_bound = new double[l];
 	double *C_ = new double[l];
@@ -2408,6 +2408,7 @@ static double calc_start_C(const problem *prob, const parameter *param)
 //
 // Remove zero weighed data as libsvm and some liblinear solvers require C > 0.
 //
+#if USE_WEIGHTS
 static void remove_zero_weight(problem *newprob, const problem *prob) 
 {
 	int i;
@@ -2430,7 +2431,7 @@ static void remove_zero_weight(problem *newprob, const problem *prob)
 			j++;
 		}
 }
-
+#endif
 //
 // Interface functions
 //

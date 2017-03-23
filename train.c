@@ -137,7 +137,9 @@ int main(int argc, char **argv)
 	destroy_param(&param);
 	free(prob.y);
 	free(prob.x);
+#if USE_WEIGHTS	
 	free(prob.W);
+#endif
 	free(x_space);
 	free(line);
 
@@ -392,7 +394,9 @@ void read_problem(const char *filename)
 
 	prob.y = Malloc(double,prob.l);
 	prob.x = Malloc(struct feature_node *,prob.l);
+#if USE_WEIGHTS
 	prob.W = Malloc(double,prob.l);
+#endif
 	x_space = Malloc(struct feature_node,elements+prob.l);
 
 	max_index = 0;
@@ -453,7 +457,7 @@ void read_problem(const char *filename)
 		prob.n=max_index;
 
 	fclose(fp);
-
+#if USE_WEIGHTS
 	if(weight_file) 
 	{
 		fp = fopen(weight_file,"r");
@@ -466,4 +470,5 @@ void read_problem(const char *filename)
 		for(i=0;i<prob.l;i++)
 			prob.W[i] = 1;
 	}
+#endif	
 }
