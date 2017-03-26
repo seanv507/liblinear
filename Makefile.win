@@ -1,5 +1,5 @@
 CXX = cl.exe
-CFLAGS = /nologo /O2 /EHsc /I. /D _WIN64 /D _CRT_SECURE_NO_DEPRECATE -DUSE_WEIGHTS=${USE_WEIGHTS}
+CFLAGS = /nologo /O2 /EHsc /I. /D _WIN64 /D _CRT_SECURE_NO_DEPRECATE /D USE_WEIGHTS=${USE_WEIGHTS}
 TARGET = windows
 
 all: $(TARGET)\train.exe $(TARGET)\predict.exe lib
