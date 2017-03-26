@@ -1788,17 +1788,18 @@ static void solve_l1r_lr(
 		if(prob_col->y[j] > 0)
 		{
 			y[j] = 1;
-			C[j] = Cp;
+#if USE_WEIGHTS
+			C[j] = prob_col->W[j] * Cp;
+#endif
 		}
 		else
 		{
 			y[j] = -1;
-			C[j] = Cn;
-		}
-#if USE_WEIGHTS
-		C[j] *= prob_col->W[j];
-#endif
 
+#if USE_WEIGHTS
+			C[j] = prob_col->W[j] * Cn;
+#endif
+		}
 		exp_wTx[j] = 0;
 	}
 
@@ -2797,11 +2798,22 @@ void find_parameter_C(const problem *prob, const parameter *param, int nr_fold, 
 		}
 		set_print_string_function(default_print_string);
 
-		int total_correct = 0;
+		double total_correct = 0;
+		double wt_n_samples = 0;
 		for(i=0; i<prob->l; i++)
+		{
+			
+#if USE_WEIGHTS
+			double W = prob->W[i];
+#else
+			double W = 1;
+#endif
+			wt_n_samples += W;
 			if(target[i] == prob->y[i])
-				++total_correct;
-		double current_rate = (double)total_correct/prob->l;
+				total_correct += W;
+		}
+
+		double current_rate = total_correct/wt_n_samples;
 		if(current_rate > *best_rate)
 		{
 			*best_C = param1.C;
@@ -2824,6 +2836,9 @@ void find_parameter_C(const problem *prob, const parameter *param, int nr_fold, 
 	{
 		free(subprob[i].x);
 		free(subprob[i].y);
+#if USE_WEIGHTS
+		free(subprob[i].W);
+#endif		
 		free(prev_w[i]);
 	}
 	free(prev_w);
