@@ -101,7 +101,8 @@ void do_find_parameter_C(double *best_C, double *best_rate)
 double do_cross_validation()
 {
 	int i;
-	int total_correct = 0;
+	double wt_n_samples = 0;
+	double total_correct = 0;
 	double total_error = 0;
 	double sumv = 0, sumy = 0, sumvv = 0, sumyy = 0, sumvy = 0;
 	double *target = Malloc(double, prob.l);
@@ -113,30 +114,45 @@ double do_cross_validation()
 	   param.solver_type == L2R_L2LOSS_SVR_DUAL)
 	{
 		for(i=0;i<prob.l;i++)
-                {
-                        double y = prob.y[i];
-                        double v = target[i];
-                        total_error += (v-y)*(v-y);
-                        sumv += v;
-                        sumy += y;
-                        sumvv += v*v;
-                        sumyy += y*y;
-                        sumvy += v*y;
-                }
-                mexPrintf("Cross Validation Mean squared error = %g\n",total_error/prob.l);
-                mexPrintf("Cross Validation Squared correlation coefficient = %g\n",
-                        ((prob.l*sumvy-sumv*sumy)*(prob.l*sumvy-sumv*sumy))/
-                        ((prob.l*sumvv-sumv*sumv)*(prob.l*sumyy-sumy*sumy))
-                        );
-		retval = total_error/prob.l;
+		{
+			double y = prob.y[i];
+			double v = target[i];
+#if USE_WEIGHTS
+			double W = prob.W[i];
+#else
+			double W = 1;
+#endif
+			total_error += W * (v-y)*(v-y);
+			sumv += W*v;
+			sumy += W*y;
+			sumvv += W*v*v;
+			sumyy += W*y*y;
+			sumvy += W*v*y;
+			wt_n_samples += W;
+
+		}
+		mexPrintf("Cross Validation Mean squared error = %g\n",total_error/wt_n_samples);
+		mexPrintf("Cross Validation Squared correlation coefficient = %g\n",
+                    ((wt_n_samples*sumvy-sumv*sumy)*(wt_n_samples*sumvy-sumv*sumy))/
+					((wt_n_samples*sumvv-sumv*sumv)*(wt_n_samples*sumyy-sumy*sumy))
+                );
+		retval = total_error/wt_n_samples;
 	}
 	else
 	{
 		for(i=0;i<prob.l;i++)
+		{
+#if USE_WEIGHTS
+			double W = prob.W[i];
+#else
+			double W = 1;
+#endif
+			wt_n_samples += W;
 			if(target[i] == prob.y[i])
-				++total_correct;
-		mexPrintf("Cross Validation Accuracy = %g%%\n",100.0*total_correct/prob.l);
-		retval = 100.0*total_correct/prob.l;
+				total_correct += W;
+		}
+		mexPrintf("Cross Validation Accuracy = %g%%\n",100.0*total_correct/wt_n_samples);
+		retval = 100.0*total_correct/wt_n_samples;
 	}
 
 	free(target);
